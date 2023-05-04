@@ -1,6 +1,8 @@
 package com.learntocode;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -11,7 +13,7 @@ public class Main {
         // display home screen using switch
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        while (!input.equals("X")) {
+        while (!input.equalsIgnoreCase("X")) {
             System.out.println("Please select an option:");
             System.out.println("D) Add Deposit");
             System.out.println("P) Make Payment");
@@ -19,16 +21,16 @@ public class Main {
             System.out.println("X) Exit");
             input = scanner.nextLine();
             switch (input) {
-                case "D":
+                case "D", "d":
                     addDeposit();
                     break;
-                case "P":
+                case "P", "p":
                     makePayment();
                     break;
-                case "L":
+                case "L", "l":
                     displayLedger();
                     break;
-                case "X":
+                case "X", "x":
                     break;
                 default:
                     System.out.println("Invalid option.");
@@ -90,33 +92,29 @@ public class Main {
     public static void displayLedger() throws FileNotFoundException {
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        while (!input.equals("X")) {
+        while (!input.equalsIgnoreCase("X")) {
             System.out.println("Please select the display option:");
             System.out.println("A) All");
             System.out.println("D) Deposits");
             System.out.println("P) Payments");
             System.out.println("R) Reports");
             System.out.println("H) Home");
-            System.out.println("X) Exit");
             input = scanner.nextLine();
             switch (input) {
-                case "A":
+                case "A", "a":
                     displayAllEntries();
                     break;
-                case "D":
+                case "D", "d":
                     displayDeposits();
                     break;
-                case "P":
+                case "P", "p":
                     displayPayments();
                     break;
-                case "R":
+                case "R", "r":
                     runReport();
                     break;
-                case "H":
+                case "H", "h":
                     return;
-                case "X":
-                    System.out.println("Goodbye!");
-                    break;
                 default:
                     System.out.println("Invalid option.");
                     break;
@@ -204,27 +202,26 @@ public class Main {
         }
     }
 
-    // display monthToDateReport using if and sort and substring and compareTo. filters out lines start with 20. then sorts the remaining lines by date and prints them to the console.
+    // display monthToDateReport
     public static void monthToDateReport() {
-        try (BufferedReader br = new BufferedReader(new FileReader("transactions.csv"))) {
-            String line;
-            List<String> transactions = new ArrayList<>();
+        // format the current date as a string in the format "yyyy-MM-dd"
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        // get current date and time
+        Calendar calendar = Calendar.getInstance();
+        // format the current date and time as a string in the "yyyy-MM-dd" format and result only include the year and month (the first 7 characters) in the currentMonth variable
+        String currentMonth = dateFormat.format(calendar.getTime()).substring(0, 7);
+
+        String csvFile = "transactions.csv";
+        String line = "";
+        String cvsSplitBy = "\\|";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts[0].startsWith("20")) {
-                    transactions.add(line);
+                String[] transaction = line.split(cvsSplitBy);
+                // if the first element of the array starts with the current month, then print that line
+                if (transaction[0].startsWith(currentMonth)) {
+                    System.out.println(line);
                 }
-            }
-            // sorts a list of strings called "transactions" by the first 10 characters of each string. substring uses to extract the first 10 characters of each string
-            // and compares them using compareTo. compare two strings and returns an integer value depending on whether the first string is less than, equal to, or greater
-            // than the second string.
-            Collections.sort(transactions, new Comparator<String>() {
-                public int compare(String s1, String s2) {
-                    return s1.substring(0, 10).compareTo(s2.substring(0, 10));
-                }
-            });
-            for (String transaction : transactions) {
-                System.out.println(transaction);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -236,10 +233,8 @@ public class Main {
     public static void previousMonthReport() {
         // Get the current date
         LocalDate currentDate = LocalDate.now();
-
         // Get the date of the first day of the previous month
         LocalDate firstDayOfPreviousMonth = currentDate.minusMonths(1).withDayOfMonth(1);
-
         // Get the date of the last day of the previous month
         LocalDate lastDayOfPreviousMonth = firstDayOfPreviousMonth.withDayOfMonth(firstDayOfPreviousMonth.lengthOfMonth());
 
@@ -276,22 +271,24 @@ public class Main {
 
     // display yearToDateReport
     public static void yearToDateReport() {
-        try (BufferedReader br = new BufferedReader(new FileReader("transactions.csv"))) {
-            String line;
-            List<String> transactions = new ArrayList<>();
+        // formats dates in "yyyy"format
+        DateFormat dateFormat = new SimpleDateFormat("yyyy");
+        //get current date and time
+        Calendar calendar = Calendar.getInstance();
+        // format the current date and time as a string in the "yyyy" format and resulting string is stored in the currentYear variable
+        String currentYear = dateFormat.format(calendar.getTime());
+
+        String csvFile = "transactions.csv";
+        String line = "";
+        String cvsSplitBy = "\\|";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts[0].startsWith("20")) {
-                    transactions.add(line);
+                String[] transaction = line.split(cvsSplitBy);
+                // if the first element of the array starts with the current year, then print that line
+                if (transaction[0].startsWith(currentYear)) {
+                    System.out.println(line);
                 }
-            }
-            Collections.sort(transactions, new Comparator<String>() {
-                public int compare(String s1, String s2) {
-                    return s1.substring(0, 4).compareTo(s2.substring(0, 4));
-                }
-            });
-            for (String transaction : transactions) {
-                System.out.println(transaction);
             }
         } catch (IOException e) {
             e.printStackTrace();
