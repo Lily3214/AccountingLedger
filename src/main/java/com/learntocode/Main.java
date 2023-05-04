@@ -1,4 +1,4 @@
-package org.example;
+package com.learntocode;
 
 import java.io.*;
 import java.time.LocalDate;

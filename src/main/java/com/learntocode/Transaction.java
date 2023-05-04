@@ -1,4 +1,4 @@
-package org.example;
+package com.learntocode;
 
 public class Transaction {
     private String date;
