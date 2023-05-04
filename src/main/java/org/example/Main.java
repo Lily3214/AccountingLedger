@@ -204,7 +204,7 @@ public class Main {
         }
     }
 
-    // display monthToDateReport using if and sort and substring and compareTo. filters out lines start with 20. then sorts the remaining lines by date and prints them toe the console.
+    // display monthToDateReport using if and sort and substring and compareTo. filters out lines start with 20. then sorts the remaining lines by date and prints them to the console.
     public static void monthToDateReport() {
         try (BufferedReader br = new BufferedReader(new FileReader("transactions.csv"))) {
             String line;
@@ -274,7 +274,7 @@ public class Main {
         }
     }
 
-    // display previousMonthReport
+    // display yearToDateReport
     public static void yearToDateReport() {
         try (BufferedReader br = new BufferedReader(new FileReader("transactions.csv"))) {
             String line;
