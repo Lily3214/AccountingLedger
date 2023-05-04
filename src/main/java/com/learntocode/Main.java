@@ -204,22 +204,22 @@ public class Main {
 
     // display monthToDateReport
     public static void monthToDateReport() {
-        // format the current date as a string in the format "yyyy-MM-dd"
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // get current date and time
-        Calendar calendar = Calendar.getInstance();
-        // format the current date and time as a string in the "yyyy-MM-dd" format and result only include the year and month (the first 7 characters) in the currentMonth variable
-        String currentMonth = dateFormat.format(calendar.getTime()).substring(0, 7);
-
         String csvFile = "transactions.csv";
         String line = "";
         String cvsSplitBy = "\\|";
-
+        LocalDate currentDate = LocalDate.now();
+        // DateTimeFormatter class is used to parse and format dates in "yyyy-MM-dd" pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String currentMonth = currentDate.getMonth().toString();
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] transaction = line.split(cvsSplitBy);
-                // if the first element of the array starts with the current month, then print that line
-                if (transaction[0].startsWith(currentMonth)) {
+                LocalDate transactionDate = LocalDate.parse(transaction[0], formatter);
+                //  Reads each line of the CSV file and extracts the transaction date from it.
+                String transactionMonth = transactionDate.getMonth().toString();
+
+                // If the transaction date is in the current month, prints out that line.
+                if (transactionMonth.equals(currentMonth)) {
                     System.out.println(line);
                 }
             }
@@ -271,22 +271,22 @@ public class Main {
 
     // display yearToDateReport
     public static void yearToDateReport() {
-        // formats dates in "yyyy"format
-        DateFormat dateFormat = new SimpleDateFormat("yyyy");
-        //get current date and time
-        Calendar calendar = Calendar.getInstance();
-        // format the current date and time as a string in the "yyyy" format and resulting string is stored in the currentYear variable
-        String currentYear = dateFormat.format(calendar.getTime());
-
         String csvFile = "transactions.csv";
         String line = "";
         String cvsSplitBy = "\\|";
+        // DateTimeFormatter class is used to parse and format dates in "yyyy-MM-dd" pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // Get the current date and current year
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             while ((line = br.readLine()) != null) {
                 String[] transaction = line.split(cvsSplitBy);
-                // if the first element of the array starts with the current year, then print that line
-                if (transaction[0].startsWith(currentYear)) {
+                LocalDate transactionDate = LocalDate.parse(transaction[0], formatter);
+                int transactionYear = transactionDate.getYear();
+                // If the transaction date is in the current year, prints out that line.
+                if (transactionYear == currentYear) {
                     System.out.println(line);
                 }
             }
